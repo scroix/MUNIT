@@ -30,6 +30,7 @@ parser.add_argument('--checkpoint', type=str, help="checkpoint of autoencoders")
 parser.add_argument('--a2b', type=int, help="1 for a2b and 0 for b2a", default=1)
 parser.add_argument('--seed', type=int, default=1, help="random seed")
 parser.add_argument('--num_style',type=int, default=10, help="number of styles to sample")
+parser.add_argument('--num_style_start',type=int, default=0, help="starting style sample index (zero index based)")
 parser.add_argument('--synchronized', action='store_true', help="whether use synchronized style code or not")
 parser.add_argument('--output_only', action='store_true', help="whether only save the output images or also save the input images")
 parser.add_argument('--output_path', type=str, default='.', help="path for logs, checkpoints, and VGG model weight")
@@ -101,7 +102,8 @@ if opts.trainer == 'MUNIT':
         images = Variable(images.cuda(), volatile=True)
         content, _ = encode(images)
         style = style_fixed if opts.synchronized else Variable(torch.randn(opts.num_style, style_dim, 1, 1).cuda(), volatile=True)
-        for j in range(opts.num_style):
+        style_count = opts.num_style_start + opts.num_style
+        for j in range(opts.num_style_start,style_count):
             s = style[j].unsqueeze(0)
             outputs = decode(content, s)
             outputs = (outputs + 1) / 2.
