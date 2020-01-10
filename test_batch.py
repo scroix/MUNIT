@@ -34,6 +34,7 @@ parser.add_argument('--num_style_start',type=int, default=0, help="starting styl
 parser.add_argument('--synchronized', action='store_true', help="whether use synchronized style code or not")
 parser.add_argument('--output_only', action='store_true', help="whether only save the output images or also save the input images")
 parser.add_argument('--output_path', type=str, default='.', help="path for logs, checkpoints, and VGG model weight")
+parser.add_argument('--file_extension', type=str, default='png', help="jpg or png (default: png)")
 parser.add_argument('--trainer', type=str, default='MUNIT', help="MUNIT|UNIT")
 parser.add_argument('--compute_IS', action='store_true', help="whether to compute Inception Score or not")
 parser.add_argument('--compute_CIS', action='store_true', help="whether to compute Conditional Inception Score or not")
@@ -114,8 +115,9 @@ if opts.trainer == 'MUNIT':
             if opts.compute_CIS:
                 cur_preds.append(pred)
             # path = os.path.join(opts.output_folder, 'input{:03d}_output{:03d}.jpg'.format(i, j))
-            basename = os.path.basename(names[1])
-            path = os.path.join(opts.output_folder+"_%02d"%j,basename)
+            basename = os.path.basename(names[1]).split('.')[0]
+            filename = '{}.{}'.format(basename,opts.file_extension)
+            path = os.path.join(opts.output_folder+"_%02d"%j,filename)
             if not os.path.exists(os.path.dirname(path)):
                 os.makedirs(os.path.dirname(path))
             vutils.save_image(outputs.data, path, padding=0, normalize=True)
