@@ -52,7 +52,7 @@ else:
     sys.exit("Only support MUNIT|UNIT")
 
 try:
-    state_dict = torchfile.load(opts.checkpoint)
+    state_dict = torch.load(opts.checkpoint)
     trainer.gen_a.load_state_dict(state_dict['a'])
     trainer.gen_b.load_state_dict(state_dict['b'])
 except:
