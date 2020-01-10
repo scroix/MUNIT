@@ -2,7 +2,7 @@
 Copyright (C) 2018 NVIDIA Corporation.  All rights reserved.
 Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 """
-from torchfile
+#from torch.utils.serialization import load_lua
 from torch.utils.data import DataLoader
 from networks import Vgg16
 from torch.autograd import Variable
@@ -11,6 +11,7 @@ from torchvision import transforms
 from data import ImageFilelist, ImageFolder
 import torch
 import torch.nn as nn
+import torchfile
 import os
 import math
 import torchvision.utils as vutils
@@ -201,6 +202,22 @@ def get_slerp_interp(nb_latents, nb_interp, z_dim):
         latent_interp = np.array([slerp(v, low, high) for v in interp_vals],
                                  dtype=np.float32)
         latent_interps = np.vstack((latent_interps, latent_interp))
+
+    return latent_interps[:, :, np.newaxis, np.newaxis]
+
+def get_slerp_interp2(nb_latents, nb_interp):
+    low = np.random.randn(512)
+    
+    latent_interps = np.empty(shape=(0, 512), dtype=np.float32)
+    for _ in range(nb_latents):
+        high = np.random.randn(512)#low + np.random.randn(512) * 0.7
+        
+        interp_vals = np.linspace(1./nb_interp, 1, num=nb_interp)
+        latent_interp = np.array([slerp(v, low, high) for v in interp_vals],
+                                  dtype=np.float32)
+        
+        latent_interps = np.vstack((latent_interps, latent_interp))
+        low = high
 
     return latent_interps[:, :, np.newaxis, np.newaxis]
 
