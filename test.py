@@ -87,12 +87,12 @@ with torch.no_grad():
     content, _ = encode(image)
 
     if opts.trainer == 'MUNIT':
-        style_rand = Variable(torch.randn(opts.num_style, style_dim, 1, 1).cuda())
+        style_count = opts.num_style_start + opts.num_style
+        style_rand = Variable(torch.randn(style_count, style_dim, 1, 1).cuda())
         if opts.style != '':
             _, style = style_encode(style_image)
         else:
             style = style_rand
-        style_count = opts.num_style_start + opts.num_style
         for j in range(opts.num_style_start,style_count):
             s = style[j].unsqueeze(0)
             outputs = decode(content, s)
