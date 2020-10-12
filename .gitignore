@@ -14,3 +14,7 @@ src/yaml_generator.py
 *.zip
 *.pkl
 *.pyc
+datasets/*
+!datasets/demo_*
+results/
+models/

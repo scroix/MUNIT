@@ -1,0 +1,15 @@
+.git
+.gitignore
+outputs/
+src/models/
+data/
+logs/
+.idea/
+dgx/scripts/
+src/*
+*.tar.gz
+*ipynb
+*.zip
+*.pkl
+*.pyc
+datasets/*
