@@ -1,5 +1,5 @@
 # Our base CUDA/OS image.
-FROM nvidia/cuda:10.2-cudnn7-runtime-ubuntu18.04
+FROM nvidia/cuda:11.1-cudnn8-runtime-ubuntu18.04
 
 # Our Ubuntu environment and packages.
 RUN apt-get update \
@@ -19,7 +19,7 @@ RUN apt-get update \
         unzip
 
 # Our Anaconda environment and packages.
-ARG anaconda_version=Anaconda3-2019.07-Linux-x86_64.sh
+ARG anaconda_version=Anaconda3-2020.07-Linux-x86_64.sh
 
 ENV ANACONDA /opt/anaconda
 ENV PATH $ANACONDA/bin:$PATH
@@ -29,12 +29,13 @@ RUN wget https://repo.continuum.io/archive/$anaconda_version -P /tmp \
     && bash /tmp/$anaconda_version -b -p $ANACONDA \
     && rm /tmp/$anaconda_version -rf
 
-## Install packages for this project, and avoid issues from updating.
-RUN conda config --set auto_update_conda False
+## Create the environment, and activate the environment.
+COPY environment.yml .
+RUN conda env create -f environment.yml
 
-RUN conda install -y -c anaconda pip cudatoolkit=10.2
-RUN conda install -y -c pytorch pytorch=1.6 torchvision 
-RUN conda install -y -c conda-forge torchfile tensorboard tensorboardx pyyaml=3.13
+## Lift the name from the configuration and activate it.
+RUN echo "source activate $(head -1 environment.yml | cut -d' ' -f2)" > ~/.bashrc
+ENV PATH /opt/conda/envs/$(head -1 environment.yml | cut -d' ' -f2)/bin:$PATH
 
 ## Let's get ready.
 WORKDIR /app

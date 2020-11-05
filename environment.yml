@@ -1,0 +1,14 @@
+name: munit
+channels:
+  - conda-forge
+  - nvidia
+  - pytorch
+dependencies:
+  - python=3.8
+  - cudatoolkit
+  - pytorch=1.7
+  - torchvision
+  - torchfile
+  - tensorboard
+  - tensorboardx
+  - pyyaml=3.13
